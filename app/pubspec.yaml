@@ -1,0 +1,97 @@
+name: fwi_lanin
+description: "Índice Meteorológico de Peligro de Incendios Forestales del Parque Nacional Lanín."
+# The following line prevents the package from being accidentally published to
+# pub.dev using `flutter pub publish`. This is preferred for private packages.
+publish_to: 'none' # Remove this line if you wish to publish to pub.dev
+
+# The following defines the version and build number for your application.
+# A version number is three numbers separated by dots, like 1.2.43
+# followed by an optional build number separated by a +.
+# Both the version and the builder number may be overridden in flutter
+# build by specifying --build-name and --build-number, respectively.
+# In Android, build-name is used as versionName while build-number used as versionCode.
+# Read more about Android versioning at https://developer.android.com/studio/publish/versioning
+# In iOS, build-name is used as CFBundleShortVersionString while build-number is used as CFBundleVersion.
+# Read more about iOS versioning at
+# https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
+# In Windows, build-name is used as the major, minor, and patch parts
+# of the product and file versions while build-number is used as the build suffix.
+version: 1.6.0+20
+
+environment:
+  sdk: ^3.13.1
+
+# Dependencies specify other packages that your package needs in order to work.
+# To automatically upgrade your package dependencies to the latest versions
+# consider running `flutter pub upgrade --major-versions`. Alternatively,
+# dependencies can be manually updated by changing the version numbers below to
+# the latest version available on pub.dev. To see which dependencies have newer
+# versions available, run `flutter pub outdated`.
+dependencies:
+  flutter:
+    sdk: flutter
+
+  # The following adds the Cupertino Icons font to your application.
+  # Use with the CupertinoIcons class for iOS style icons.
+  cupertino_icons: ^1.0.8
+
+  # Persistencia de la escala de fuente (equivalente a client_storage
+  # de Flet en el original) — ver lib/theme/font_scale.dart.
+  shared_preferences: ^2.3.4
+
+  # Cliente HTTP para la capa de datos (C3) — ver lib/data/api_client.dart.
+  http: ^1.2.2
+
+  # Abre enlaces externos (logos y "Acerca de esta app" en Presentación).
+  url_launcher: ^6.3.1
+
+  # Versión real del build (Nosotros, C8) — evita un texto hardcodeado
+  # que se desactualiza en cada release, como pasaba en el original.
+  package_info_plus: ^8.0.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+  # The "flutter_lints" package below contains a set of recommended lints to
+  # encourage good coding practices. The lint set provided by the package is
+  # activated in the `analysis_options.yaml` file located at the root of your
+  # package. See that file for information about deactivating specific lint
+  # rules and activating additional ones.
+  flutter_lints: ^6.0.0
+
+  # Genera el ícono real de la app (C12) a partir de assets/icon/icon.png
+  # — hasta ahora el scaffold de C1 dejaba el ícono default de Flutter.
+  # Solo de build time: no es una dependencia de la app en sí.
+  flutter_launcher_icons: ^0.14.3
+
+# Ícono de la app (C12) — mismo logo institucional del ICE que el original
+# (assets/imagenes/icon-512.png en el proyecto de referencia). Fondo
+# blanco para el ícono adaptativo de Android: el logo ya trae transparencia
+# y suficiente margen propio, así que no hace falta recortarlo.
+flutter_launcher_icons:
+  android: "launcher_icon"
+  ios: false
+  image_path: "assets/icon/icon.png"
+  adaptive_icon_background: "#FFFFFF"
+  adaptive_icon_foreground: "assets/icon/icon.png"
+  min_sdk_android: 21
+
+# For information on the generic Dart part of this file, see the
+# following page: https://dart.dev/tools/pub/pubspec
+
+# The following section is specific to Flutter packages.
+flutter:
+
+  # The following line ensures that the Material Icons font is
+  # included with your application, so that you can use the icons in
+  # the material Icons class.
+  uses-material-design: true
+
+  assets:
+    - assets/images/
+
+  fonts:
+    - family: Anta
+      fonts:
+        - asset: assets/fonts/Anta.ttf

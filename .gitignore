@@ -1,0 +1,34 @@
+# ── Flutter / Dart ────────────────────────────────────────────────
+app/build/
+app/.dart_tool/
+app/.flutter-plugins
+app/.flutter-plugins-dependencies
+app/.packages
+# pubspec.lock SÍ se versiona: es una app, no un paquete publicado.
+# Fija versiones exactas de dependencias para builds reproducibles.
+app/android/.gradle/
+app/android/local.properties
+app/android/app/debug/
+app/android/app/profile/
+app/android/app/release/
+*.iml
+
+# ── Firma de Android (no aplica al deploy web, pero por las dudas) ──
+*.jks
+*.keystore
+key.properties
+**/key.properties
+
+# ── Vercel ───────────────────────────────────────────────────────
+# web/public/ lo genera el buildCommand de vercel.json copiando
+# app/build/web/ en cada deploy — no es código fuente.
+web/public/
+web/.vercel/
+
+# ── Sistema operativo / editor ────────────────────────────────────
+.DS_Store
+Thumbs.db
+desktop.ini
+.idea/
+.vscode/*
+!.vscode/settings.json
