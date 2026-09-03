@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -13,9 +15,12 @@ import '../widgets/ancho_maximo.dart';
 /// blanco de la Page es lo que se termina viendo detrás).
 ///
 /// **Ajuste pedido tras el deploy web:** `BoxFit.cover` (imagen a pantalla
-/// completa) recortaba demasiado al brigadista en pantallas anchas —
-/// `BoxFit.contain` muestra la imagen completa, con el blanco del fondo
-/// asomando a los costados si la proporción de la ventana no coincide.
+/// completa) recortaba demasiado al brigadista en pantallas anchas — se
+/// pasa a `BoxFit.contain` para mostrarla completa. Eso solo, con el
+/// blanco de fondo asomando a los costados en ventanas panorámicas, no
+/// convenció: se agrega una segunda copia de la misma imagen detrás,
+/// desenfocada y a pantalla completa (`BoxFit.cover` + blur), así los
+/// costados quedan cubiertos por la propia foto en vez de blanco liso.
 ///
 /// Bug propio corregido al revisar C12: acá se había puesto
 /// `Scaffold(backgroundColor: Colors.transparent)`, que en vez de dejar
@@ -59,6 +64,18 @@ class PresentacionScreen extends StatelessWidget {
     return Scaffold(
       body: Stack(
         children: [
+          const Positioned.fill(
+            child: Opacity(
+              opacity: 0.45,
+              child: ImageFiltered(
+                imageFilter: ImageFilter.blur(sigmaX: 40, sigmaY: 40),
+                child: Image(
+                  image: AssetImage('assets/images/briga.png'),
+                  fit: BoxFit.cover,
+                ),
+              ),
+            ),
+          ),
           const Positioned.fill(
             child: Opacity(
               opacity: 0.45,
