@@ -458,7 +458,7 @@ La información generada será debidamente interpretada por personal pertenecien
 
 ### Parque Nacional Lanín
 - Juan Carlos Salazar (Área técnica del ICE Lanín)
-- Bruno Andrés Salazar (Programador)
+- Bruno Andrés Salazar (Desarrollador)
 - Juan Manuel Corvalán (Informática)
 
 ### Colaboradores

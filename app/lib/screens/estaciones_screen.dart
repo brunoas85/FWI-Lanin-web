@@ -208,8 +208,9 @@ class _GrillaEstaciones extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Wrap(
-      spacing: 16,
-      runSpacing: 16,
+      alignment: WrapAlignment.center,
+      spacing: 28,
+      runSpacing: 28,
       children: [
         for (final estacion in estaciones)
           SizedBox(
@@ -244,7 +245,7 @@ class _TarjetaEstacion extends StatelessWidget {
             RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
           ),
           backgroundColor: const WidgetStatePropertyAll(AppColors.surface),
-          padding: const WidgetStatePropertyAll(EdgeInsets.all(12)),
+          padding: const WidgetStatePropertyAll(EdgeInsets.all(16)),
           elevation: WidgetStateProperty.resolveWith(
             (states) => states.contains(WidgetState.pressed) ? 1 : 2,
           ),

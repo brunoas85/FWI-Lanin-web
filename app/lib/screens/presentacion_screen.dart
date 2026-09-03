@@ -122,40 +122,43 @@ class PresentacionScreen extends StatelessWidget {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          SizedBox(
-                            width: 180,
-                            height: 30,
-                            child: ElevatedButton.icon(
-                              style: ButtonStyle(
-                                backgroundColor: const WidgetStatePropertyAll(
-                                  Colors.black,
-                                ),
-                                foregroundColor: const WidgetStatePropertyAll(
-                                  Colors.white,
-                                ),
-                                shape: WidgetStatePropertyAll(
-                                  RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(12),
-                                  ),
-                                ),
-                                overlayColor: WidgetStatePropertyAll(
-                                  _colorOverlayAcercaDe.withValues(alpha: 0.4),
-                                ),
-                                elevation: WidgetStateProperty.resolveWith(
-                                  (states) =>
-                                      states.contains(WidgetState.pressed)
-                                      ? 0
-                                      : 3,
+                          ElevatedButton.icon(
+                            style: ButtonStyle(
+                              backgroundColor: const WidgetStatePropertyAll(
+                                Colors.black,
+                              ),
+                              foregroundColor: const WidgetStatePropertyAll(
+                                Colors.white,
+                              ),
+                              minimumSize: const WidgetStatePropertyAll(
+                                Size(0, 36),
+                              ),
+                              padding: const WidgetStatePropertyAll(
+                                EdgeInsets.symmetric(horizontal: 14),
+                              ),
+                              shape: WidgetStatePropertyAll(
+                                RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(12),
                                 ),
                               ),
-                              icon: const Icon(Icons.info_outline, size: 18),
-                              label: Text(
-                                'Acerca de esta app',
-                                style: TextStyle(fontSize: context.scaled(12)),
+                              overlayColor: WidgetStatePropertyAll(
+                                _colorOverlayAcercaDe.withValues(alpha: 0.4),
                               ),
-                              onPressed: () =>
-                                  Navigator.pushNamed(context, '/nosotros'),
+                              elevation: WidgetStateProperty.resolveWith(
+                                (states) =>
+                                    states.contains(WidgetState.pressed)
+                                    ? 0
+                                    : 3,
+                              ),
                             ),
+                            icon: const Icon(Icons.info_outline, size: 18),
+                            label: Text(
+                              'Acerca de esta app',
+                              maxLines: 1,
+                              style: TextStyle(fontSize: context.scaled(12)),
+                            ),
+                            onPressed: () =>
+                                Navigator.pushNamed(context, '/nosotros'),
                           ),
                           Row(
                             mainAxisSize: MainAxisSize.min,
