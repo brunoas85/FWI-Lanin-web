@@ -39,10 +39,12 @@ export default async function handler(req, res) {
 
   try {
     const upstream = await fetch(target, { signal: AbortSignal.timeout(TIMEOUT_MS) });
-    const body = await upstream.text();
+    // Buffer, no .text(): /mapa_estaciones devuelve un JPEG binario, y
+    // decodificarlo/reenmarcarlo como texto UTF-8 corrompe los bytes.
+    const body = Buffer.from(await upstream.arrayBuffer());
     res
       .status(upstream.status)
-      .setHeader('Content-Type', upstream.headers.get('content-type') || 'text/plain; charset=utf-8')
+      .setHeader('Content-Type', upstream.headers.get('content-type') || 'application/octet-stream')
       .send(body);
   } catch (err) {
     const timeout = err?.name === 'TimeoutError' || err?.name === 'AbortError';
