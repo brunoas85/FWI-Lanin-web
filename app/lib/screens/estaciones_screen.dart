@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 
 import '../data/api_client.dart';
@@ -84,11 +86,41 @@ class _EstacionesScreenState extends State<EstacionesScreen> {
           onPressed: () => Navigator.pop(context),
         ),
       ),
-      body: _Cuerpo(
-        estado: _estaciones.state,
-        onReintentar: _estaciones.load,
-        mapaUrl: '${_client.baseUrl}/mapa_estaciones',
-        imagenMapa: widget.imagenMapa,
+      body: Stack(
+        children: [
+          const Positioned.fill(child: _FondoSutil()),
+          Positioned.fill(
+            child: _Cuerpo(
+              estado: _estaciones.state,
+              onReintentar: _estaciones.load,
+              mapaUrl: '${_client.baseUrl}/mapa_estaciones',
+              imagenMapa: widget.imagenMapa,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+/// Fondo apenas insinuado (misma foto de la portada, `background1.png`,
+/// muy desenfocada y a baja opacidad) para que esta pantalla no se sienta
+/// una isla en blanco liso, aislada del resto de la app. A propósito
+/// mucho más tenue que en la portada — acá el contenido son datos que
+/// hay que poder leer rápido, no una imagen de presentación.
+class _FondoSutil extends StatelessWidget {
+  const _FondoSutil();
+
+  @override
+  Widget build(BuildContext context) {
+    return Opacity(
+      opacity: 0.08,
+      child: ImageFiltered(
+        imageFilter: ImageFilter.blur(sigmaX: 30, sigmaY: 30),
+        child: const Image(
+          image: AssetImage('assets/images/background1.png'),
+          fit: BoxFit.cover,
+        ),
       ),
     );
   }
@@ -254,6 +286,15 @@ class _TarjetaEstacion extends StatelessWidget {
             Navigator.pushNamed(context, '/estacion/${estacion.id}'),
         child: Row(
           children: [
+            Container(
+              width: 5,
+              height: 44,
+              margin: const EdgeInsets.only(right: 12),
+              decoration: BoxDecoration(
+                color: nivel.color,
+                borderRadius: BorderRadius.circular(3),
+              ),
+            ),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
