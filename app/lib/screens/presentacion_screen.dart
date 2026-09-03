@@ -24,11 +24,15 @@ import '../widgets/ancho_maximo.dart';
 /// (`BoxFit.cover` + blur), así los costados quedan cubiertos por esa
 /// foto en vez de blanco liso. El brigadista, en `BoxFit.contain` puro,
 /// quedaba chico dentro de esa franja central — se le suma un
-/// `Transform.scale(scale: 1.35)` para que ocupe más superficie, a costa
-/// de recortar un poco los bordes de la imagen (el `Stack` los clipea).
-/// El corte seco entre esos bordes y el fondo desenfocado se veía como
-/// dos líneas verticales — [_Brigadista] los difumina con un
-/// `ShaderMask`. El título pasó de verde oliva a gris oscuro, a pedido.
+/// `Transform.scale(scale: 1.35)` para que ocupe más superficie.
+///
+/// `briga.png` es la foto original tal cual, con su propio fondo
+/// (humo/cielo) — más oscuro que `background1.png`, se notaba como un
+/// parche rectangular detrás del brigadista. Se le sacó el fondo con
+/// `rembg` (recorte automático del brigadista, sin herramienta de diseño)
+/// y el resultado se guardó aparte como `briga_sin_fondo.png` — con canal
+/// alfa, así solo se ve la persona, sin ningún rectángulo de por medio.
+/// El título pasó de verde oliva a gris oscuro, a pedido.
 ///
 /// Bug propio corregido al revisar C12: acá se había puesto
 /// `Scaffold(backgroundColor: Colors.transparent)`, que en vez de dejar
@@ -215,68 +219,23 @@ class PresentacionScreen extends StatelessWidget {
 Future<void> _abrirUrl(String url) =>
     launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication);
 
-/// Imagen del brigadista (`BoxFit.contain` + zoom 1.35, ver comentario de
-/// clase). En pantallas anchas la foto (853×1280, más angosta que alta)
-/// termina bastante antes que los bordes de la pantalla, y el corte seco
-/// entre sus píxeles nítidos y el fondo desenfocado de atrás se veía
-/// como dos líneas verticales — acá se difuminan esos bordes con un
-/// [ShaderMask] en vez de sacarlos de golpe.
-///
-/// El ancho real de la foto renderizada depende del alto disponible
-/// (`fit: contain` la ajusta por altura en una pantalla panorámica) y del
-/// zoom aplicado — por eso el cálculo va en un [LayoutBuilder] en vez de
-/// un porcentaje fijo, así el difuminado cae justo en el borde real de
-/// la imagen sin importar el tamaño de la ventana. Si la foto ya ocupa
-/// casi todo el ancho (pantallas angostas/verticales), `t` se satura en
-/// 0.5 y el degradado no llega a notarse — no hay borde que difuminar.
+/// Imagen del brigadista, ya sin fondo (`briga_sin_fondo.png`, canal
+/// alfa) — sin rectángulo detrás que difuminar, alcanza con
+/// `BoxFit.contain` + zoom para agrandarla un poco (ver comentario de
+/// clase).
 class _Brigadista extends StatelessWidget {
   const _Brigadista();
 
-  static const _aspecto = 853 / 1280;
   static const _zoom = 1.35;
-  static const _anchoFundido = 0.05; // fracción del ancho total
 
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        final anchoFoto = constraints.maxHeight * _aspecto * _zoom;
-        final double t = (constraints.maxWidth == 0
-                ? 0.5
-                : anchoFoto / (2 * constraints.maxWidth))
-            .clamp(0.0, 0.5)
-            .toDouble();
-        final double bordeIzq = (0.5 - t).clamp(0.0, 1.0).toDouble();
-        final double bordeDer = (0.5 + t).clamp(0.0, 1.0).toDouble();
-        final double inicioIzq = (bordeIzq - _anchoFundido)
-            .clamp(0.0, 1.0)
-            .toDouble();
-        final double finDer = (bordeDer + _anchoFundido)
-            .clamp(0.0, 1.0)
-            .toDouble();
-
-        return ShaderMask(
-          blendMode: BlendMode.dstIn,
-          shaderCallback: (rect) => LinearGradient(
-            begin: Alignment.centerLeft,
-            end: Alignment.centerRight,
-            colors: const [
-              Colors.transparent,
-              Colors.white,
-              Colors.white,
-              Colors.transparent,
-            ],
-            stops: [inicioIzq, bordeIzq, bordeDer, finDer],
-          ).createShader(rect),
-          child: Transform.scale(
-            scale: _zoom,
-            child: const Image(
-              image: AssetImage('assets/images/briga.png'),
-              fit: BoxFit.contain,
-            ),
-          ),
-        );
-      },
+    return Transform.scale(
+      scale: _zoom,
+      child: const Image(
+        image: AssetImage('assets/images/briga_sin_fondo.png'),
+        fit: BoxFit.contain,
+      ),
     );
   }
 }
