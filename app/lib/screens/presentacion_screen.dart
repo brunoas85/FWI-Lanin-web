@@ -6,11 +6,16 @@ import '../theme/font_scale.dart';
 import '../widgets/ancho_maximo.dart';
 
 /// Pantalla Presentación (Home) — `/`. Spec exacta en docs/B1_PARIDAD_UI.md
-/// §1. Sin AppBar. El fondo visual es la imagen `briga.png` a pantalla
-/// completa detrás del contenido, semitransparente (opacity 0.45) sobre
-/// un fondo **blanco** — igual que el original, que fuerza `page.bgcolor
-/// = "#FFFFFF"` en `main.py` (la `View` en sí no fija su propio bgcolor,
-/// así que el blanco de la Page es lo que se termina viendo detrás).
+/// §1. Sin AppBar. El fondo visual es la imagen `briga.png` detrás del
+/// contenido, semitransparente (opacity 0.45) sobre un fondo **blanco**
+/// — igual que el original, que fuerza `page.bgcolor = "#FFFFFF"` en
+/// `main.py` (la `View` en sí no fija su propio bgcolor, así que el
+/// blanco de la Page es lo que se termina viendo detrás).
+///
+/// **Ajuste pedido tras el deploy web:** `BoxFit.cover` (imagen a pantalla
+/// completa) recortaba demasiado al brigadista en pantallas anchas —
+/// `BoxFit.contain` muestra la imagen completa, con el blanco del fondo
+/// asomando a los costados si la proporción de la ventana no coincide.
 ///
 /// Bug propio corregido al revisar C12: acá se había puesto
 /// `Scaffold(backgroundColor: Colors.transparent)`, que en vez de dejar
@@ -59,7 +64,7 @@ class PresentacionScreen extends StatelessWidget {
               opacity: 0.45,
               child: Image(
                 image: AssetImage('assets/images/briga.png'),
-                fit: BoxFit.cover,
+                fit: BoxFit.contain,
               ),
             ),
           ),
