@@ -42,6 +42,8 @@ export default async function handler(req, res) {
     res
       .status(upstream.status)
       .setHeader('Content-Type', upstream.headers.get('content-type') || 'text/plain; charset=utf-8')
+      .setHeader('X-Debug-Target', target)
+      .setHeader('X-Debug-Origin', API_ORIGIN)
       .send(body);
   } catch (err) {
     const timeout = err?.name === 'TimeoutError' || err?.name === 'AbortError';
