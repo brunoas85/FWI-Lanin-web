@@ -81,12 +81,12 @@ class PresentacionScreen extends StatelessWidget {
               ),
             ),
           ),
-          const Positioned.fill(
+          Positioned.fill(
             child: Opacity(
               opacity: 0.45,
               child: Transform.scale(
                 scale: 1.35,
-                child: Image(
+                child: const Image(
                   image: AssetImage('assets/images/briga.png'),
                   fit: BoxFit.contain,
                 ),
