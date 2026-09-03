@@ -22,7 +22,10 @@ import '../widgets/ancho_maximo.dart';
 /// convenció: se agrega detrás una segunda imagen, `background1.png` (un
 /// incendio forestal en las sierras), a pantalla completa y desenfocada
 /// (`BoxFit.cover` + blur), así los costados quedan cubiertos por esa
-/// foto en vez de blanco liso.
+/// foto en vez de blanco liso. El brigadista, en `BoxFit.contain` puro,
+/// quedaba chico dentro de esa franja central — se le suma un
+/// `Transform.scale(scale: 1.35)` para que ocupe más superficie, a costa
+/// de recortar un poco los bordes de la imagen (el `Stack` los clipea).
 ///
 /// Bug propio corregido al revisar C12: acá se había puesto
 /// `Scaffold(backgroundColor: Colors.transparent)`, que en vez de dejar
@@ -81,9 +84,12 @@ class PresentacionScreen extends StatelessWidget {
           const Positioned.fill(
             child: Opacity(
               opacity: 0.45,
-              child: Image(
-                image: AssetImage('assets/images/briga.png'),
-                fit: BoxFit.contain,
+              child: Transform.scale(
+                scale: 1.35,
+                child: Image(
+                  image: AssetImage('assets/images/briga.png'),
+                  fit: BoxFit.contain,
+                ),
               ),
             ),
           ),
