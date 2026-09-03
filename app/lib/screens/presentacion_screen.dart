@@ -26,6 +26,9 @@ import '../widgets/ancho_maximo.dart';
 /// quedaba chico dentro de esa franja central — se le suma un
 /// `Transform.scale(scale: 1.35)` para que ocupe más superficie, a costa
 /// de recortar un poco los bordes de la imagen (el `Stack` los clipea).
+/// El corte seco entre esos bordes y el fondo desenfocado se veía como
+/// dos líneas verticales — [_Brigadista] los difumina con un
+/// `ShaderMask`. El título pasó de verde oliva a gris oscuro, a pedido.
 ///
 /// Bug propio corregido al revisar C12: acá se había puesto
 /// `Scaffold(backgroundColor: Colors.transparent)`, que en vez de dejar
@@ -58,7 +61,7 @@ import '../widgets/ancho_maximo.dart';
 class PresentacionScreen extends StatelessWidget {
   const PresentacionScreen({super.key});
 
-  static const _colorTitulo = Color(0xFF546E07); // no está en AppColors
+  static const _colorTitulo = Color(0xFF424242); // gris oscuro
   static const _colorOverlayPrimario = Color(0xFF0D47A1);
   static const _colorOverlayAcercaDe = Color(0xFF383D46);
   static const _colorIconoEstaciones = Color(0xFFE81D1D);
@@ -81,18 +84,7 @@ class PresentacionScreen extends StatelessWidget {
               ),
             ),
           ),
-          Positioned.fill(
-            child: Opacity(
-              opacity: 0.45,
-              child: Transform.scale(
-                scale: 1.35,
-                child: const Image(
-                  image: AssetImage('assets/images/briga.png'),
-                  fit: BoxFit.contain,
-                ),
-              ),
-            ),
-          ),
+          const Positioned.fill(child: Opacity(opacity: 0.45, child: _Brigadista())),
           Positioned.fill(
             child: Container(
               alignment: Alignment.center,
@@ -222,6 +214,72 @@ class PresentacionScreen extends StatelessWidget {
 
 Future<void> _abrirUrl(String url) =>
     launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication);
+
+/// Imagen del brigadista (`BoxFit.contain` + zoom 1.35, ver comentario de
+/// clase). En pantallas anchas la foto (853×1280, más angosta que alta)
+/// termina bastante antes que los bordes de la pantalla, y el corte seco
+/// entre sus píxeles nítidos y el fondo desenfocado de atrás se veía
+/// como dos líneas verticales — acá se difuminan esos bordes con un
+/// [ShaderMask] en vez de sacarlos de golpe.
+///
+/// El ancho real de la foto renderizada depende del alto disponible
+/// (`fit: contain` la ajusta por altura en una pantalla panorámica) y del
+/// zoom aplicado — por eso el cálculo va en un [LayoutBuilder] en vez de
+/// un porcentaje fijo, así el difuminado cae justo en el borde real de
+/// la imagen sin importar el tamaño de la ventana. Si la foto ya ocupa
+/// casi todo el ancho (pantallas angostas/verticales), `t` se satura en
+/// 0.5 y el degradado no llega a notarse — no hay borde que difuminar.
+class _Brigadista extends StatelessWidget {
+  const _Brigadista();
+
+  static const _aspecto = 853 / 1280;
+  static const _zoom = 1.35;
+  static const _anchoFundido = 0.05; // fracción del ancho total
+
+  @override
+  Widget build(BuildContext context) {
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final anchoFoto = constraints.maxHeight * _aspecto * _zoom;
+        final double t = (constraints.maxWidth == 0
+                ? 0.5
+                : anchoFoto / (2 * constraints.maxWidth))
+            .clamp(0.0, 0.5)
+            .toDouble();
+        final double bordeIzq = (0.5 - t).clamp(0.0, 1.0).toDouble();
+        final double bordeDer = (0.5 + t).clamp(0.0, 1.0).toDouble();
+        final double inicioIzq = (bordeIzq - _anchoFundido)
+            .clamp(0.0, 1.0)
+            .toDouble();
+        final double finDer = (bordeDer + _anchoFundido)
+            .clamp(0.0, 1.0)
+            .toDouble();
+
+        return ShaderMask(
+          blendMode: BlendMode.dstIn,
+          shaderCallback: (rect) => LinearGradient(
+            begin: Alignment.centerLeft,
+            end: Alignment.centerRight,
+            colors: const [
+              Colors.transparent,
+              Colors.white,
+              Colors.white,
+              Colors.transparent,
+            ],
+            stops: [inicioIzq, bordeIzq, bordeDer, finDer],
+          ).createShader(rect),
+          child: Transform.scale(
+            scale: _zoom,
+            child: const Image(
+              image: AssetImage('assets/images/briga.png'),
+              fit: BoxFit.contain,
+            ),
+          ),
+        );
+      },
+    );
+  }
+}
 
 /// Fila de los 3 logos superiores. La proporción 1 : 1.33 : 1 del original
 /// (`expand=1` / `expand=1.33` / `expand=1`) se replica con flex enteros
