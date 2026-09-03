@@ -64,12 +64,12 @@ class PresentacionScreen extends StatelessWidget {
     return Scaffold(
       body: Stack(
         children: [
-          const Positioned.fill(
+          Positioned.fill(
             child: Opacity(
               opacity: 0.45,
               child: ImageFiltered(
                 imageFilter: ImageFilter.blur(sigmaX: 40, sigmaY: 40),
-                child: Image(
+                child: const Image(
                   image: AssetImage('assets/images/briga.png'),
                   fit: BoxFit.cover,
                 ),
