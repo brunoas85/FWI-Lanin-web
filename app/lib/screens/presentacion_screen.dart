@@ -73,7 +73,7 @@ class PresentacionScreen extends StatelessWidget {
             child: Opacity(
               opacity: 0.45,
               child: ImageFiltered(
-                imageFilter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
+                imageFilter: ImageFilter.blur(sigmaX: 4, sigmaY: 4),
                 child: const Image(
                   image: AssetImage('assets/images/background1.png'),
                   fit: BoxFit.cover,
