@@ -70,7 +70,7 @@ class PresentacionScreen extends StatelessWidget {
               child: ImageFiltered(
                 imageFilter: ImageFilter.blur(sigmaX: 40, sigmaY: 40),
                 child: const Image(
-                  image: AssetImage('assets/images/briga.png'),
+                  image: AssetImage('assets/images/background1.png'),
                   fit: BoxFit.cover,
                 ),
               ),
@@ -80,7 +80,7 @@ class PresentacionScreen extends StatelessWidget {
             child: Opacity(
               opacity: 0.45,
               child: Image(
-                image: AssetImage('assets/images/briga.png'),
+                image: AssetImage('assets/images/background1.png'),
                 fit: BoxFit.contain,
               ),
             ),
