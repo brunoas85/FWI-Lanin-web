@@ -22,19 +22,14 @@ export default async function handler(req, res) {
     return;
   }
 
-  const { path, ...resto } = req.query;
-  const segmentos = Array.isArray(path) ? path.join('/') : (path ?? '');
-
-  const query = new URLSearchParams();
-  for (const [clave, valor] of Object.entries(resto)) {
-    if (Array.isArray(valor)) {
-      valor.forEach((v) => query.append(clave, v));
-    } else if (valor !== undefined) {
-      query.append(clave, valor);
-    }
-  }
-  const queryString = query.toString();
-  const target = `${API_ORIGIN}/${segmentos}${queryString ? `?${queryString}` : ''}`;
+  // req.query no expone de forma confiable el segmento capturado por
+  // `[...path]` en este runtime — se parsea la URL cruda en su lugar.
+  const url = new URL(req.url, 'http://internal');
+  const prefix = '/api/proxy/';
+  const segmentos = url.pathname.startsWith(prefix)
+    ? url.pathname.slice(prefix.length)
+    : '';
+  const target = `${API_ORIGIN}/${segmentos}${url.search}`;
 
   try {
     const upstream = await fetch(target, { signal: AbortSignal.timeout(TIMEOUT_MS) });
@@ -42,8 +37,6 @@ export default async function handler(req, res) {
     res
       .status(upstream.status)
       .setHeader('Content-Type', upstream.headers.get('content-type') || 'text/plain; charset=utf-8')
-      .setHeader('X-Debug-Target', target)
-      .setHeader('X-Debug-Origin', API_ORIGIN)
       .send(body);
   } catch (err) {
     const timeout = err?.name === 'TimeoutError' || err?.name === 'AbortError';
