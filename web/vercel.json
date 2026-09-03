@@ -2,5 +2,8 @@
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "installCommand": "echo 'Sin dependencias de Node — nada que instalar'",
   "buildCommand": "bash build.sh",
-  "outputDirectory": "public"
+  "outputDirectory": "public",
+  "rewrites": [
+    { "source": "/api/proxy/(.*)", "destination": "/api/proxy" }
+  ]
 }

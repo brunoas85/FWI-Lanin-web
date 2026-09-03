@@ -24,6 +24,7 @@ key.properties
 # app/build/web/ en cada deploy — no es código fuente.
 web/public/
 web/.vercel/
+/.vercel/
 
 # ── Sistema operativo / editor ────────────────────────────────────
 .DS_Store

@@ -8,6 +8,14 @@
 // también un problema de CORS que iba a aparecer igual (el Flask real no
 // manda esas cabeceras hoy).
 //
+// El catch-all `api/proxy/[...path].js` sólo llegaba a matchear un único
+// segmento de ruta en este proyecto (bug/limitación del router de Vercel
+// para funciones sin framework) — `/api/proxy/estaciones` andaba pero
+// `/api/proxy/estacion/<id>` daba 404 de plataforma. Se reemplaza por una
+// función fija en `/api/proxy` + un rewrite en vercel.json que manda
+// cualquier `/api/proxy/*` acá; el path real se reconstruye parseando
+// `req.url` (que preserva la ruta original pedida por el navegador).
+//
 // Función Node sin dependencias: Vercel ya expone `req.query`/`res.status`/
 // `res.send` en las funciones bajo api/ sin necesidad de instalar nada.
 // Sirve GET únicamente — los 6 endpoints del API (docs/API.md) son todos
@@ -22,8 +30,6 @@ export default async function handler(req, res) {
     return;
   }
 
-  // req.query no expone de forma confiable el segmento capturado por
-  // `[...path]` en este runtime — se parsea la URL cruda en su lugar.
   const url = new URL(req.url, 'http://internal');
   const prefix = '/api/proxy/';
   const segmentos = url.pathname.startsWith(prefix)
